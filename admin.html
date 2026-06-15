@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>🌾 Мерке Агро — Сайт Басқармасы</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#1a6b2f;--g2:#2d9147;--gp:#e8f5e9;--go:#f0a500;--dk:#1c1c1a;--tx:#333;--mu:#777;--gr:#f4f4ef;--bd:#e0e0d8;--wh:#fff;--r:10px;--sh:0 2px 12px rgba(0,0,0,.07)}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--tx);min-height:100vh}
+
+/* ===== LOGIN ===== */
+#login{position:fixed;inset:0;background:linear-gradient(135deg,#0d3d1a,#1a6b2f);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:20px;padding:2.5rem;width:min(400px,90vw);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{font-size:48px;margin-bottom:1rem}
+.login-box h1{font-size:22px;font-weight:800;color:var(--dk);margin-bottom:.25rem}
+.login-box p{font-size:14px;color:var(--mu);margin-bottom:2rem}
+.login-box input{width:100%;padding:13px 16px;border:2px solid var(--bd);border-radius:10px;font-size:16px;font-family:inherit;outline:none;text-align:center;letter-spacing:3px;margin-bottom:1rem;transition:border .2s}
+.login-box input:focus{border-color:var(--g)}
+.login-box button{width:100%;background:var(--g);color:#fff;border:none;border-radius:10px;padding:13px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+.login-box button:hover{background:var(--g2)}
+.lerr{color:#c62828;font-size:13px;margin-top:.5rem;display:none}
+.lhint{background:var(--gp);color:var(--g);font-size:13px;padding:10px 14px;border-radius:8px;margin-top:1rem;font-weight:600}
+
+/* ===== LAYOUT ===== */
+#app{display:none;min-height:100vh;flex-direction:column}
+#app.show{display:flex}
+
+/* HEADER */
+.hdr{background:var(--dk);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-logo{font-size:22px}
+.hdr-name{font-size:15px;font-weight:700;color:#fff}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.4);display:block}
+.hdr-right{display:flex;align-items:center;gap:.75rem}
+.hbtn{background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:8px 14px;font-size:13px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;gap:6px}
+.hbtn:hover{background:rgba(255,255,255,.18)}
+.hbtn.green{background:var(--g);color:#fff}
+.hbtn.green:hover{background:var(--g2)}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.sb-section{padding:.5rem 0}
+.sb-label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;padding:.5rem 1.25rem .25rem}
+.sbitem{display:flex;align-items:center;gap:10px;padding:.65rem 1.25rem;cursor:pointer;color:var(--mu);font-size:13px;font-weight:500;transition:all .2s;border-left:3px solid transparent;border-radius:0}
+.sbitem:hover{background:var(--gr);color:var(--tx)}
+.sbitem.active{background:var(--gp);color:var(--g);border-left-color:var(--g);font-weight:600}
+.sbitem .ico{font-size:18px;width:22px;text-align:center;flex-shrink:0}
+.sb-sep{height:1px;background:var(--bd);margin:.5rem 1rem}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:2rem}
+.page{display:none;max-width:800px}
+.page.active{display:block}
+.page-title{font-size:22px;font-weight:800;color:var(--dk);margin-bottom:.25rem}
+.page-sub{font-size:14px;color:var(--mu);margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--bd)}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:1.25rem;box-shadow:var(--sh)}
+.card-title{font-size:15px;font-weight:700;color:var(--dk);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+.card-title .ico{font-size:20px}
+
+/* FORM */
+.fg{margin-bottom:1.1rem}
+.fg label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--dk);margin-bottom:6px}
+.fg label .tip{font-size:11px;color:var(--mu);font-weight:400;margin-left:auto;cursor:help}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 13px;border:1.5px solid var(--bd);border-radius:8px;font-size:14px;font-family:inherit;color:var(--tx);background:#fff;outline:none;transition:border .2s}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--g);background:#fafff9}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.6}
+.fg .hint{font-size:12px;color:var(--mu);margin-top:5px;line-height:1.5}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+
+/* LANG TABS */
+.ltabs{display:flex;gap:4px;margin-bottom:1.5rem;background:var(--gr);border-radius:8px;padding:4px}
+.ltab{flex:1;padding:7px;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:var(--mu);transition:all .2s;font-family:inherit;text-align:center}
+.ltab.active{background:#fff;color:var(--g);box-shadow:var(--sh)}
+
+/* SAVE BUTTON */
+.save-row{display:flex;align-items:center;gap:1rem;margin-top:.5rem}
+.savebtn{background:var(--g);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;gap:7px}
+.savebtn:hover{background:var(--g2)}
+.savebtn:active{transform:scale(.98)}
+.saved{font-size:13px;color:var(--g);opacity:0;transition:opacity .3s;font-weight:600}
+.saved.show{opacity:1}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.dcard{background:#fff;border-radius:var(--r);padding:1.25rem;border:1px solid var(--bd);text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:var(--sh)}
+.dcard:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.dcard .dnum{font-size:2rem;font-weight:800;color:var(--g)}
+.dcard .dico{font-size:28px;margin-bottom:.5rem}
+.dcard .dlbl{font-size:12px;color:var(--mu);margin-top:4px}
+.guide-card{background:linear-gradient(135deg,#e8f5e9,#f0fff4);border:1px solid #c8e6c9;border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem}
+.guide-card h3{font-size:16px;font-weight:700;color:var(--g);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.steps{display:flex;flex-direction:column;gap:.6rem}
+.step{display:flex;align-items:flex-start;gap:.75rem;font-size:14px;color:var(--tx)}
+.step-num{width:26px;height:26px;background:var(--g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* LIST ITEMS */
+.list-wrap{display:flex;flex-direction:column;gap:.65rem;margin-bottom:1rem}
+.litem{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:var(--sh)}
+.litem:hover{border-color:#c8c8c0}
+.litem-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.litem-ico{font-size:28px;flex-shrink:0}
+.litem-name{font-size:14px;font-weight:700;color:var(--dk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.litem-sub{font-size:12px;color:var(--mu);margin-top:2px}
+.litem-btns{display:flex;gap:.5rem;flex-shrink:0}
+.ebtn{background:var(--gp);color:var(--g);border:none;border-radius:7px;padding:7px 14px;font-size:12px;cursor:pointer;font-weight:700;font-family:inherit;transition:background .2s}
+.ebtn:hover{background:#c8e6c9}
+.dbtn{background:#fce4ec;color:#b71c1c;border:none;border-radius:7px;padding:7px 14px;font-size:12px;cursor:pointer;font-weight:700;font-family:inherit;transition:background .2s}
+.dbtn:hover{background:#f8bbd0}
+.addbtn{background:var(--g);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;display:inline-flex;align-items:center;gap:6px}
+.addbtn:hover{background:var(--g2)}
+
+/* EDIT FORM */
+.edit-box{background:#f8fff8;border:2px solid #c8e6c9;border-radius:var(--r);padding:1.5rem;margin-top:.75rem;display:none}
+.edit-box.show{display:block}
+.edit-box h4{font-size:14px;font-weight:700;color:var(--g);margin-bottom:1rem;display:flex;align-items:center;gap:7px}
+.edit-btns{display:flex;gap:.5rem;margin-top:1rem}
+.ebtn-save{background:var(--g);color:#fff;border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.ebtn-cancel{background:#eee;color:var(--tx);border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.ebtn-save:hover{background:var(--g2)}
+.ebtn-cancel:hover{background:#e0e0d8}
+
+/* EMOJI GRID */
+.emoji-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem}
+.emoji-opt{font-size:22px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:2px solid transparent;transition:all .2s}
+.emoji-opt:hover,.emoji-opt.sel{border-color:var(--g);background:var(--gp)}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--g);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;transform:translateY(100px);opacity:0;transition:all .3s;z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .sidebar{display:none}
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .frow,.f3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <div class="login-logo">🌾</div>
+    <h1>Мерке Агро Комплекс</h1>
+    <p>Сайтты басқару панелі</p>
+    <input type="password" id="pwd" placeholder="Құпия сөзді енгізіңіз" onkeydown="if(event.key==='Enter')tryLogin()"/>
+    <div class="lerr" id="lerr">❌ Қате құпия сөз. Қайталаңыз.</div>
+    <button onclick="tryLogin()">🔓 Кіру</button>
+    <div class="lhint">🔑 Құпия сөз: <strong>merke2026</strong></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">🌾</div>
+      <div>
+        <span class="hdr-name">МЕРКЕ АГРО КОМПЛЕКС</span>
+        <span class="hdr-sub">Сайт Басқармасы</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="hbtn green" onclick="previewSite()">👁️ Сайтты ашу</button>
+      <button class="hbtn" onclick="resetData()">↺ Бастапқыға қайту</button>
+      <button class="hbtn" onclick="doLogout()">🚪 Шығу</button>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Басты</div>
+        <div class="sbitem active" onclick="nav('dash')"><span class="ico">🏠</span>Дашборд</div>
+      </div>
+      <div class="sb-sep"></div>
+      <div class="sb-section">
+        <div class="sb-label">Сайт мазмұны</div>
+        <div class="sbitem" onclick="nav('hero')"><span class="ico">🌟</span>Басты бет</div>
+        <div class="sbitem" onclick="nav('stats')"><span class="ico">📊</span>Статистика</div>
+        <div class="sbitem" onclick="nav('about')"><span class="ico">🏡</span>Ферма туралы</div>
+        <div class="sbitem" onclick="nav('products')"><span class="ico">🛍️</span>Өнімдер</div>
+        <div class="sbitem" onclick="nav('team')"><span class="ico">👥</span>Команда</div>
+        <div class="sbitem" onclick="nav('news')"><span class="ico">📰</span>Жаңалықтар</div>
+        <div class="sbitem" onclick="nav('faq')"><span class="ico">❓</span>FAQ</div>
+        <div class="sbitem" onclick="nav('contact')"><span class="ico">📞</span>Байланыс</div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- === ДАШБОРД === -->
+      <div class="page active" id="p-dash">
+        <div class="page-title">🏠 Дашборд</div>
+        <div class="page-sub">Сайтқа жалпы шолу және жылдам өзгерту</div>
+
+        <div class="guide-card">
+          <h3>📖 Сайтты қалай өзгертуге болады?</h3>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Сол жақтан <strong>өзгертгіңіз келген бөлімді</strong> таңдаңыз (Өнімдер, Жаңалықтар, т.б.)</div></div>
+            <div class="step"><div class="step-num">2</div><div>Форма өрістерін <strong>толтырыңыз</strong> — ешқандай код қажет емес</div></div>
+            <div class="step"><div class="step-num">3</div><div><strong>«Сақтау»</strong> батырмасын басыңыз — өзгерістер автоматты түрде сайтқа қолданылады</div></div>
+            <div class="step"><div class="step-num">4</div><div>Жоғарыдағы <strong>«Сайтты ашу»</strong> батырмасы арқылы нәтижені тексеріңіз</div></div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="dcard" onclick="nav('products')">
+            <div class="dico">🛍️</div>
+            <div class="dnum" id="d-p">3</div>
+            <div class="dlbl">Өнімдер</div>
+          </div>
+          <div class="dcard" onclick="nav('news')">
+            <div class="dico">📰</div>
+            <div class="dnum" id="d-n">3</div>
+            <div class="dlbl">Жаңалықтар</div>
+          </div>
+          <div class="dcard" onclick="nav('team')">
+            <div class="dico">👥</div>
+            <div class="dnum" id="d-t">4</div>
+            <div class="dlbl">Қызметкерлер</div>
+          </div>
+          <div class="dcard" onclick="nav('faq')">
+            <div class="dico">❓</div>
+            <div class="dnum" id="d-f">5</div>
+            <div class="dlbl">FAQ сұрақтар</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">⚡</span>Жылдам өзгерту</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem">
+            <button class="savebtn" onclick="nav('hero')" style="background:#1a6b2f">🌟 Басты бет</button>
+            <button class="savebtn" onclick="nav('products')" style="background:#2d5a1b">🛍️ Өнімдер</button>
+            <button class="savebtn" onclick="nav('news')" style="background:#3d5020">📰 Жаңалықтар</button>
+            <button class="savebtn" onclick="nav('contact')" style="background:#444b1c">📞 Байланыс</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- === БАСТЫ БЕТ === -->
+      <div class="page" id="p-hero">
+        <div class="page-title">🌟 Басты бет мазмұны</div>
+        <div class="page-sub">Сайттың алғашқы бетінде көрінетін мәтіндерді өзгертіңіз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">🏷️</span>Жарнама жолағы</div>
+          <div class="fg">
+            <label>Кішкентай жарнама мәтіні <span class="tip">? Сайттың жоғарысындағы жасыл жолақтағы мәтін</span></label>
+            <input id="h-badge" placeholder="мысалы: Қазақстанның табиғи өнімдері"/>
+            <div class="hint">💡 Қысқа, тартымды сөздер жазыңыз (15-25 символ)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">📝</span>Қысқа сипаттама</div>
+          <div class="fg">
+            <label>Ферма туралы қысқаша <span class="tip">? Сайт ашылғанда оқырманға алғашқы көрінетін мәтін</span></label>
+            <textarea id="h-desc" placeholder="мысалы: Таза табиғат, заманауи технология және ұрпақтан ұрпаққа жеткен тәжірибе..."></textarea>
+            <div class="hint">💡 2-3 сөйлем жазыңыз — фермаңыздың ерекшеліктерін атап өтіңіз</div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="savebtn" onclick="saveHero()">💾 Сақтау</button>
+          <span class="saved" id="sv-hero">✅ Сақталды!</span>
+        </div>
+      </div>
+
+      <!-- === СТАТИСТИКА === -->
+      <div class="page" id="p-stats">
+        <div class="page-title">📊 Статистика сандары</div>
+        <div class="page-sub">Сайттағы 4 негізгі санды өзгертіңіз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div id="stats-cards"></div>
+
+        <div class="save-row">
+          <button class="savebtn" onclick="saveStats()">💾 Барлығын сақтау</button>
+          <span class="saved" id="sv-stats">✅ Сақталды!</span>
+        </div>
+      </div>
+
+      <!-- === ФЕРМА ТУРАЛЫ === -->
+      <div class="page" id="p-about">
+        <div class="page-title">🏡 Ферма туралы бөлім</div>
+        <div class="page-sub">«Ферма туралы» бетіндегі мәтіндерді өзгертіңіз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">📅</span>Жалпы мәліметтер</div>
+          <div class="frow">
+            <div class="fg">
+              <label>Ферма негізделген жыл <span class="tip">? Жасыл бейджде көрінеді</span></label>
+              <input id="ab-year" type="number" placeholder="мысалы: 2004"/>
+            </div>
+            <div class="fg">
+              <label>Жер көлемі (га) <span class="tip">? Статистикада қолданылады</span></label>
+              <input id="ab-area" placeholder="мысалы: 5000"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">✏️</span>Мәтін мазмұны</div>
+          <div class="fg">
+            <label>Бөлім атауы</label>
+            <input id="ab-title" placeholder="мысалы: Мерке — табиғат пен технологияның үйлесімі"/>
+          </div>
+          <div class="fg">
+            <label>Ферма туралы толық сипаттама</label>
+            <textarea id="ab-desc" style="min-height:120px" placeholder="Фермаңыздың тарихы, миссиясы және ерекшеліктері туралы жазыңыз..."></textarea>
+            <div class="hint">💡 3-5 сөйлем оңтайлы</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">✨</span>4 Артықшылық</div>
+          <div class="hint" style="margin-bottom:1rem">💡 Фермаңыздың ерекше қасиеттерін атап өтіңіз</div>
+          <div id="feats-edit"></div>
+        </div>
+
+        <div class="save-row">
+          <button class="savebtn" onclick="saveAbout()">💾 Сақтау</button>
+          <span class="saved" id="sv-about">✅ Сақталды!</span>
+        </div>
+      </div>
+
+      <!-- === ӨНІМДЕР === -->
+      <div class="page" id="p-products">
+        <div class="page-title">🛍️ Өнімдер</div>
+        <div class="page-sub">Сайттағы өнімдерді қосыңыз, өзгертіңіз немесе жойыңыз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="list-wrap" id="prod-list"></div>
+        <div class="edit-box" id="prod-form">
+          <h4>✏️ Өнімді өзгерту</h4>
+          <div class="frow">
+            <div class="fg">
+              <label>Иконка <span class="tip">? Өнімнің белгісі (emoji)</span></label>
+              <input id="pe-icon" maxlength="5"/>
+              <div class="emoji-grid">
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🌾')">🌾</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🥩')">🥩</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🥛')">🥛</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🍎')">🍎</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🥕')">🥕</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🧀')">🧀</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🥚')">🥚</div>
+                <div class="emoji-opt" onclick="setE('pe-icon',this,'🍯')">🍯</div>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Фон түсі <span class="tip">? Карточка түсі</span></label>
+              <select id="pe-color">
+                <option value="grain">🌾 Сары (астық)</option>
+                <option value="meat">🥩 Қызғылт (ет)</option>
+                <option value="dairy">🥛 Көкшіл (сүт)</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Өнім атауы</label><input id="pe-title" placeholder="мысалы: Астық өнімдері"/></div>
+          <div class="fg"><label>Сипаттамасы</label><textarea id="pe-desc" placeholder="Өнім туралы толық сипаттама жазыңыз..."></textarea></div>
+          <div class="fg">
+            <label>Тэгтер <span class="tip">? Үтірмен бөліп жазыңыз</span></label>
+            <input id="pe-tags" placeholder="мысалы: Бидай, Арпа, Сұлы, Күнбағыс"/>
+            <div class="hint">💡 Үтірмен бөліңіз: Бидай, Арпа, Сұлы</div>
+          </div>
+          <div class="fg"><label>Бағасы</label><input id="pe-price" placeholder="мысалы: Бағасы: 65₸/кг бастап"/></div>
+          <div class="edit-btns">
+            <button class="ebtn-save" onclick="saveProd()">💾 Сақтау</button>
+            <button class="ebtn-cancel" onclick="cancelEdit('prod')">Болдырмау</button>
+          </div>
+        </div>
+        <button class="addbtn" onclick="addItem('prod')" style="margin-top:1rem">➕ Жаңа өнім қосу</button>
+      </div>
+
+      <!-- === КОМАНДА === -->
+      <div class="page" id="p-team">
+        <div class="page-title">👥 Команда мүшелері</div>
+        <div class="page-sub">Қызметкерлерді қосыңыз, өзгертіңіз немесе жойыңыз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="list-wrap" id="team-list"></div>
+        <div class="edit-box" id="team-form">
+          <h4>✏️ Қызметкерді өзгерту</h4>
+          <div class="frow">
+            <div class="fg">
+              <label>Аватар</label>
+              <input id="te-icon" maxlength="5"/>
+              <div class="emoji-grid">
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👨‍💼')">👨‍💼</div>
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👩‍💼')">👩‍💼</div>
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👨‍🌾')">👨‍🌾</div>
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👩‍🔬')">👩‍🔬</div>
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👨‍🔧')">👨‍🔧</div>
+                <div class="emoji-opt" onclick="setE('te-icon',this,'👩‍🍳')">👩‍🍳</div>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Аты-жөні</label>
+              <input id="te-name" placeholder="мысалы: Асқар Бекқали"/>
+              <div class="fg" style="margin-top:.75rem"><label>Жылы (жұмысқа кірген)</label><input id="te-since" type="number" placeholder="мысалы: 2004"/></div>
+            </div>
+          </div>
+          <div class="fg"><label>Қызметі (лауазымы)</label><input id="te-role" placeholder="мысалы: Бас директор"/></div>
+          <div class="fg"><label>Қысқаша сипаттама</label><textarea id="te-desc" placeholder="Маман туралы бір-екі сөйлем..."></textarea></div>
+          <div class="edit-btns">
+            <button class="ebtn-save" onclick="saveTeam()">💾 Сақтау</button>
+            <button class="ebtn-cancel" onclick="cancelEdit('team')">Болдырмау</button>
+          </div>
+        </div>
+        <button class="addbtn" onclick="addItem('team')" style="margin-top:1rem">➕ Қызметкер қосу</button>
+      </div>
+
+      <!-- === ЖАҢАЛЫҚТАР === -->
+      <div class="page" id="p-news">
+        <div class="page-title">📰 Жаңалықтар</div>
+        <div class="page-sub">Жаңалықтарды қосыңыз, өзгертіңіз немесе жойыңыз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="list-wrap" id="news-list"></div>
+        <div class="edit-box" id="news-form">
+          <h4>✏️ Жаңалықты өзгерту</h4>
+          <div class="frow">
+            <div class="fg">
+              <label>Иконка</label>
+              <input id="ne-icon" maxlength="5"/>
+              <div class="emoji-grid">
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'🌾')">🌾</div>
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'🐄')">🐄</div>
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'🏆')">🏆</div>
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'📢')">📢</div>
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'🌱')">🌱</div>
+                <div class="emoji-opt" onclick="setE('ne-icon',this,'🤝')">🤝</div>
+              </div>
+            </div>
+            <div class="fg"><label>Жарияланған күні</label><input id="ne-date" placeholder="мысалы: 15 Маусым 2026"/></div>
+          </div>
+          <div class="fg"><label>Жаңалық тақырыбы</label><input id="ne-title" placeholder="Жаңалық тақырыбын жазыңыз..."/></div>
+          <div class="fg"><label>Жаңалық мазмұны</label><textarea id="ne-desc" style="min-height:120px" placeholder="Жаңалықтың толық мазмұнын жазыңыз..."></textarea></div>
+          <div class="edit-btns">
+            <button class="ebtn-save" onclick="saveNews()">💾 Сақтау</button>
+            <button class="ebtn-cancel" onclick="cancelEdit('news')">Болдырмау</button>
+          </div>
+        </div>
+        <button class="addbtn" onclick="addItem('news')" style="margin-top:1rem">➕ Жаңалық қосу</button>
+      </div>
+
+      <!-- === FAQ === -->
+      <div class="page" id="p-faq">
+        <div class="page-title">❓ Жиі қойылатын сұрақтар (FAQ)</div>
+        <div class="page-sub">Клиенттер жиі сұрайтын сұрақ-жауаптарды басқарыңыз</div>
+
+        <div class="ltabs">
+          <button class="ltab active" onclick="switchL(this,'kk')">🇰🇿 Қазақша</button>
+          <button class="ltab" onclick="switchL(this,'ru')">🇷🇺 Орысша</button>
+          <button class="ltab" onclick="switchL(this,'en')">🇬🇧 Ағылшынша</button>
+        </div>
+
+        <div class="list-wrap" id="faq-list"></div>
+        <div class="edit-box" id="faq-form">
+          <h4>✏️ Сұрақ-жауапты өзгерту</h4>
+          <div class="fg"><label>Сұрақ</label><input id="fqe-q" placeholder="Клиент қоятын сұрақты жазыңыз..."/></div>
+          <div class="fg"><label>Жауап</label><textarea id="fqe-a" style="min-height:100px" placeholder="Толық, анық жауап жазыңыз..."></textarea></div>
+          <div class="edit-btns">
+            <button class="ebtn-save" onclick="saveFaq()">💾 Сақтау</button>
+            <button class="ebtn-cancel" onclick="cancelEdit('faq')">Болдырмау</button>
+          </div>
+        </div>
+        <button class="addbtn" onclick="addItem('faq')" style="margin-top:1rem">➕ Жаңа сұрақ қосу</button>
+      </div>
+
+      <!-- === БАЙЛАНЫС === -->
+      <div class="page" id="p-contact">
+        <div class="page-title">📞 Байланыс мәліметтері</div>
+        <div class="page-sub">Телефон, email, мекенжай және жұмыс уақытын өзгертіңіз</div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">📞</span>Телефон нөмірлері</div>
+          <div class="frow">
+            <div class="fg">
+              <label>Телефон №1 (Негізгі)</label>
+              <input id="c-p1" placeholder="+7 (___) ___-__-__"/>
+            </div>
+            <div class="fg">
+              <label>Телефон №2 (Қосымша)</label>
+              <input id="c-p2" placeholder="+7 (___) ___-__-__"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">✉️</span>Электронды пошта (Email)</div>
+          <div class="frow">
+            <div class="fg">
+              <label>Email №1 (Жалпы)</label>
+              <input id="c-e1" type="email" placeholder="info@merkeagro.kz"/>
+            </div>
+            <div class="fg">
+              <label>Email №2 (Сату бөлімі)</label>
+              <input id="c-e2" type="email" placeholder="sales@merkeagro.kz"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">📍</span>Мекенжай (үш тілде)</div>
+          <div class="fg">
+            <label>🇰🇿 Қазақша мекенжай</label>
+            <input id="c-akk" placeholder="Жамбыл облысы, Мерке ауданы, Агро кешені №1"/>
+          </div>
+          <div class="fg">
+            <label>🇷🇺 Орысша мекенжай</label>
+            <input id="c-aru" placeholder="Жамбылская область, район Мерке, Агрокомплекс №1"/>
+          </div>
+          <div class="fg">
+            <label>🇬🇧 Ағылшынша мекенжай</label>
+            <input id="c-aen" placeholder="Zhambyl Region, Merke District, Agro Complex No.1"/>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">🕐</span>Жұмыс уақыты</div>
+          <div class="frow">
+            <div class="fg">
+              <label>Дүйсенбі–Жұма</label>
+              <input id="c-wd" placeholder="Дүйсенбі–Жұма: 08:00–18:00"/>
+            </div>
+            <div class="fg">
+              <label>Сенбі</label>
+              <input id="c-ws" placeholder="Сенбі: 09:00–14:00"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="savebtn" onclick="saveContact()">💾 Барлығын сақтау</button>
+          <span class="saved" id="sv-contact">✅ Сақталды!</span>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ========== DEFAULT DATA ==========
+const DEF = {
+  hero:{kk:{badge:'Қазақстанның табиғи өнімдері',desc:'Таза табиғат, заманауи технология және ұрпақтан ұрпаққа жеткен тәжірибе. Астық, мал шаруашылығы және сүт өнімдері.'},ru:{badge:'Натуральные продукты Казахстана',desc:'Чистая природа, современные технологии и многолетний опыт. Зерно, животноводство и молочные продукты.'},en:{badge:'Natural Products of Kazakhstan',desc:'Pure nature, modern technology, and generations of expertise. Grain, livestock, and dairy products.'}},
+  about:{year:'2004',area:'5000',kk:{tag:'Ферма туралы',lbl:'жылдан бері жұмыс жасаймыз',title:'Мерке — табиғат пен технологияның үйлесімі',desc:'Мерке Агро Комплекс — Жамбыл облысының құнарлы жерінде орналасқан ірі агрокомплекс. 2004 жылдан бері астық өсіру, мал бағу және сүт өнімдерін өндіру арқылы Қазақстан халқына таза, сапалы тағам ұсынамыз.',feats:[{i:'🌾',t:'Заманауи техника',d:'Еуропалық стандарттағы ауыл шаруашылық техникасы'},{i:'🌱',t:'Экологиялық таза өндіріс',d:'Химиялық тыңайтқышсыз, табиғи жолмен өсіру'},{i:'📜',t:'Халықаралық сертификат',d:'ISO 22000 және HACCP сертификаттары бар'},{i:'🚚',t:'Тікелей жеткізу',d:'Қазақстан бойынша тікелей жеткізу қызметі'}]},ru:{tag:'О ферме',lbl:'работаем с этого года',title:'Мерке — гармония природы и технологий',desc:'Мерке Агро Комплекс — крупный агрокомплекс на плодородных землях Жамбылской области.',feats:[{i:'🌾',t:'Современная техника',d:'Сельхозтехника европейского стандарта'},{i:'🌱',t:'Экологически чистое производство',d:'Выращивание без химических удобрений'},{i:'📜',t:'Международные сертификаты',d:'Сертификаты ISO 22000 и HACCP'},{i:'🚚',t:'Прямая доставка',d:'Служба доставки по всему Казахстану'}]},en:{tag:'About Farm',lbl:'operating since this year',title:'Merke — Where Nature Meets Technology',desc:'Merke Agro Complex is a large agro complex on the fertile lands of Zhambyl region.',feats:[{i:'🌾',t:'Modern Equipment',d:'European-standard agricultural machinery'},{i:'🌱',t:'Eco-Friendly Production',d:'Grown without chemical fertilizers'},{i:'📜',t:'International Certifications',d:'ISO 22000 and HACCP certified'},{i:'🚚',t:'Direct Delivery',d:'Delivery service across Kazakhstan'}]}},
+  stats:[{num:'5000+',kk:'га егістік жер',ru:'га пахотных земель',en:'ha arable land'},{num:'20+',kk:'жыл тәжірибе',ru:'лет опыта',en:'years experience'},{num:'100%',kk:'табиғи өнім',ru:'натуральный продукт',en:'natural product'},{num:'500+',kk:'мал басы',ru:'голов скота',en:'head of livestock'}],
+  why:{kk:{tag:'Неліктен біз?',title:'Бізді таңдаудың 5 себебі',items:[{i:'🏆',t:'20+ жыл тәжірибе',d:'Ауыл шаруашылығының барлық саласы бойынша терең тәжірибе'},{i:'🌿',t:'100% табиғи',d:'Химиясыз, табиғи жолмен өсіріліп өндірілген өнімдер'},{i:'🚚',t:'Жылдам жеткізу',d:'Барлық аймаққа 24-48 сағат ішінде жеткізу'},{i:'💰',t:'Тиімді баға',d:'Тікелей өндірушіден — делдалсыз, ең тиімді бағамен'},{i:'📜',t:'Сертификатталған',d:'ISO 22000, HACCP және ГОСТ стандарттарына сай'}]},ru:{tag:'Почему мы?',title:'5 причин выбрать нас',items:[{i:'🏆',t:'20+ лет опыта',d:'Глубокий опыт во всех отраслях сельского хозяйства'},{i:'🌿',t:'100% натуральное',d:'Продукты без химии'},{i:'🚚',t:'Быстрая доставка',d:'Доставка за 24-48 часов'},{i:'💰',t:'Выгодные цены',d:'Напрямую от производителя'},{i:'📜',t:'Сертифицировано',d:'ISO 22000, HACCP и ГОСТ'}]},en:{tag:'Why Us?',title:'5 Reasons to Choose Us',items:[{i:'🏆',t:'20+ Years Experience',d:'Deep expertise across all agricultural sectors'},{i:'🌿',t:'100% Natural',d:'Products grown without chemicals'},{i:'🚚',t:'Fast Delivery',d:'Delivery within 24-48 hours'},{i:'💰',t:'Best Prices',d:'Direct from producer'},{i:'📜',t:'Certified',d:'ISO 22000, HACCP and GOST'}]}},
+  products:[{icon:'🌾',color:'grain',kk:{title:'Астық өнімдері',desc:'Жоғары сапалы дәнді дақылдар. Заманауи техникамен жиналған бидай, арпа, сұлы, күнбағыс.',tags:'Бидай,Арпа,Сұлы,Күнбағыс',price:'Бағасы: 65₸/кг бастап'},ru:{title:'Зерновые продукты',desc:'Высококачественные зерновые культуры.',tags:'Пшеница,Ячмень,Овёс,Подсолнечник',price:'Цена: от 65₸/кг'},en:{title:'Grain Products',desc:'High-quality grain crops.',tags:'Wheat,Barley,Oats,Sunflower',price:'Price: from ₸65/kg'}},{icon:'🥩',color:'meat',kk:{title:'Мал шаруашылығы өнімдері',desc:'Табиғи жайылымда өскен малдың таза еті.',tags:'Сиыр еті,Қой еті,Жылқы еті,Қазы',price:'Бағасы: 1800₸/кг бастап'},ru:{title:'Мясная продукция',desc:'Чистое мясо скота на натуральных пастбищах.',tags:'Говядина,Баранина,Конина,Казы',price:'Цена: от 1800₸/кг'},en:{title:'Meat Products',desc:'Pure meat from naturally pastured livestock.',tags:'Beef,Lamb,Horse meat,Kazy',price:'Price: from ₸1800/kg'}},{icon:'🥛',color:'dairy',kk:{title:'Сүт өнімдері',desc:'Табиғи сүттен дайындалған дәстүрлі қазақ сүт өнімдері.',tags:'Сүт,Қымыз,Айран,Сары май',price:'Бағасы: 180₸/л бастап'},ru:{title:'Молочные продукты',desc:'Традиционные казахские молочные продукты.',tags:'Молоко,Кумыс,Айран,Масло',price:'Цена: от 180₸/л'},en:{title:'Dairy Products',desc:'Traditional Kazakh dairy products.',tags:'Milk,Kumiss,Ayran,Butter',price:'Price: from ₸180/liter'}}],
+  team:[{icon:'👨‍💼',name:'Асқар Бекқали',since:'2004',kk:{role:'Бас директор',desc:'20 жылдан астам тәжірибесі бар аграрлық маман'},ru:{role:'Генеральный директор',desc:'Аграрный специалист с 20-летним опытом'},en:{role:'CEO',desc:'Agricultural expert with 20+ years experience'}},{icon:'👩‍🔬',name:'Айгүл Сейткали',since:'2010',kk:{role:'Бас агроном',desc:'Өсімдік шаруашылығы бойынша жетекші маман'},ru:{role:'Главный агроном',desc:'Ведущий специалист по растениеводству'},en:{role:'Chief Agronomist',desc:'Lead crop science specialist'}},{icon:'👨‍🌾',name:'Дастан Жұмабек',since:'2015',kk:{role:'Мал шаруашылық менеджері',desc:'Ветеринариялық дәрігер, фермерлік менеджер'},ru:{role:'Менеджер животноводства',desc:'Ветеринарный врач'},en:{role:'Livestock Manager',desc:'Veterinary doctor and farm manager'}},{icon:'👩‍💼',name:'Назерке Омарова',since:'2018',kk:{role:'Сату менеджері',desc:'Өнімдерді сату және маркетинг бойынша маман'},ru:{role:'Менеджер по продажам',desc:'Специалист по продажам'},en:{role:'Sales Manager',desc:'Sales and marketing specialist'}}],
+  news:[{icon:'🌾',ni:'ni1',kk:{date:'15 Маусым 2026',title:'2026 жылғы егін науқаны рекордпен аяқталды',desc:'Биыл 5000 гектар жерден рекордтық астық жиналды. Өнімділік 18%-ға өсті.'},ru:{date:'15 июня 2026',title:'Уборочная кампания 2026 завершилась рекордом',desc:'С 5000 гектаров собран рекордный урожай. Урожайность выросла на 18%.'},en:{date:'June 15, 2026',title:'2026 Harvest Sets New Record',desc:'Record harvest from 5,000 hectares. Yield increased by 18%.'}},{icon:'🐄',ni:'ni2',kk:{date:'2 Маусым 2026',title:'Жаңа 500 басты мал фермасы іске қосылды',desc:'500 бас малға арналған жаңа ферма кешені ашылды.'},ru:{date:'2 июня 2026',title:'Открыта новая ферма на 500 голов',desc:'Введён комплекс на 500 голов с современным оборудованием.'},en:{date:'June 2, 2026',title:'New 500-Head Farm Launched',desc:'New livestock complex for 500 head commissioned.'}},{icon:'🏆',ni:'ni3',kk:{date:'20 Мамыр 2026',title:'«ҚазАгро-2026» көрмесінде алтын медаль алдық',desc:'Сүт өнімдері бойынша 1-орын иелендік.'},ru:{date:'20 мая 2026',title:'Золотая медаль на «КазАгро-2026»',desc:'1-е место по молочной продукции.'},en:{date:'May 20, 2026',title:'Gold Medal at KazAgro-2026',desc:'1st place in dairy products.'}}],
+  faq:[{kk:{q:'Өнімдерді қандай жерде сатып алуға болады?',a:'Өнімдерімізді тікелей фермадан немесе Алматы, Тараз қалаларындағы дистрибьюторлар арқылы сатып алуға болады.'},ru:{q:'Где купить вашу продукцию?',a:'На ферме или через дистрибьюторов в Алматы и Таразе.'},en:{q:'Where can I buy your products?',a:'Directly from the farm or through distributors in Almaty and Taraz.'}},{kk:{q:'Жеткізу қызметі бар ма?',a:'Иә, Қазақстанның барлық аймақтарына жеткізу бар.'},ru:{q:'Есть ли доставка?',a:'Да, доставка по всем регионам Казахстана.'},en:{q:'Is delivery available?',a:'Yes, we deliver to all regions of Kazakhstan.'}},{kk:{q:'Өнімдеріңізде сертификат бар ма?',a:'Иә, ISO 22000, HACCP және ГОСТ сертификаттары бар.'},ru:{q:'Есть ли сертификаты?',a:'Да, ISO 22000, HACCP и ГОСТ.'},en:{q:'Are products certified?',a:'Yes, ISO 22000, HACCP and GOST certified.'}},{kk:{q:'Топтама (оптом) сатып алуға болады ма?',a:'Иә, 1 тоннадан арнайы баға.'},ru:{q:'Возможна оптовая покупка?',a:'Да, от 1 тонны — специальная цена.'},en:{q:'Is wholesale possible?',a:'Yes, special prices from 1 ton.'}},{kk:{q:'Ферманы аралауға болады ма?',a:'Иә, алдын ала хабарлассаңыз, тегін экскурсия ұйымдастырамыз.'},ru:{q:'Можно посетить ферму?',a:'Да, после предварительной договорённости. Для школьников — бесплатно.'},en:{q:'Can we visit the farm?',a:'Yes, contact us in advance. Free for school groups.'}}],
+  contact:{phone1:'+7 (726) 234-56-78',phone2:'+7 (700) 123-45-67',email1:'info@merkeagro.kz',email2:'sales@merkeagro.kz',addr_kk:'Жамбыл облысы, Мерке ауданы, Агро кешені №1',addr_ru:'Жамбылская область, район Мерке, Агрокомплекс №1',addr_en:'Zhambyl Region, Merke District, Agro Complex No.1',wd:'Дүйсенбі–Жұма: 08:00–18:00',ws:'Сенбі: 09:00–14:00'},
+};
+
+// ========== STATE ==========
+let D = JSON.parse(localStorage.getItem('merkeData') || 'null') || JSON.parse(JSON.stringify(DEF));
+let AL = 'kk';
+let editIdx = {prod:-1, team:-1, news:-1, faq:-1};
+const PASS = 'merke2026';
+
+function saveD(){ localStorage.setItem('merkeData', JSON.stringify(D)); }
+
+// ========== LOGIN ==========
+function tryLogin(){
+  const v = document.getElementById('pwd').value;
+  if(v === PASS){ document.getElementById('login').style.display='none'; document.getElementById('app').classList.add('show'); loadAll(); }
+  else { document.getElementById('lerr').style.display='block'; document.getElementById('pwd').value=''; document.getElementById('pwd').focus(); }
+}
+document.getElementById('pwd').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+function doLogout(){ document.getElementById('app').classList.remove('show'); document.getElementById('login').style.display='flex'; document.getElementById('pwd').value=''; document.getElementById('lerr').style.display='none'; }
+
+// ========== NAVIGATION ==========
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sbitem').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`p-${id}`).classList.add('active');
+  const map = {dash:0,hero:1,stats:2,about:3,products:4,team:5,news:6,faq:7,contact:8};
+  document.querySelectorAll('.sbitem')[map[id]].classList.add('active');
+  loadSection(id);
+}
+function switchL(btn, lang){
+  btn.closest('.ltabs').querySelectorAll('.ltab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  AL = lang;
+  const page = document.querySelector('.page.active').id.replace('p-','');
+  loadSection(page);
+}
+
+// ========== LOAD ALL ==========
+function loadAll(){ updateDash(); }
+function updateDash(){
+  document.getElementById('d-p').textContent = D.products.length;
+  document.getElementById('d-n').textContent = D.news.length;
+  document.getElementById('d-t').textContent = D.team.length;
+  document.getElementById('d-f').textContent = D.faq.length;
+}
+
+function loadSection(id){
+  if(id==='hero') loadHero();
+  else if(id==='stats') loadStats();
+  else if(id==='about') loadAbout();
+  else if(id==='products') loadProds();
+  else if(id==='team') loadTeam();
+  else if(id==='news') loadNews();
+  else if(id==='faq') loadFaq();
+  else if(id==='contact') loadContact();
+}
+
+// ========== HERO ==========
+function loadHero(){
+  document.getElementById('h-badge').value = D.hero[AL].badge || '';
+  document.getElementById('h-desc').value = D.hero[AL].desc || '';
+}
+function saveHero(){
+  D.hero[AL].badge = document.getElementById('h-badge').value;
+  D.hero[AL].desc = document.getElementById('h-desc').value;
+  saveD(); showSaved('sv-hero'); toast('✅ Басты бет сақталды!');
+}
+
+// ========== STATS ==========
+function loadStats(){
+  document.getElementById('stats-cards').innerHTML = D.stats.map((s,i)=>`
+    <div class="card" style="margin-bottom:.75rem">
+      <div class="card-title"><span class="ico">${['📊','⏱️','🌿','🐄'][i]}</span>Статистика ${i+1}</div>
+      <div class="frow">
+        <div class="fg"><label>Сан/Пайыз</label><input value="${s.num}" onchange="D.stats[${i}].num=this.value" placeholder="мысалы: 5000+" style="font-size:18px;font-weight:700;color:var(--g)"/></div>
+        <div class="fg"><label>Жазба (${AL.toUpperCase()})</label><input value="${s[AL]}" onchange="D.stats[${i}]['${AL}']=this.value" placeholder="мысалы: га егістік жер"/></div>
+      </div>
+    </div>`).join('');
+}
+function saveStats(){ saveD(); showSaved('sv-stats'); toast('✅ Статистика сақталды!'); }
+
+// ========== ABOUT ==========
+function loadAbout(){
+  document.getElementById('ab-year').value = D.about.year;
+  document.getElementById('ab-area').value = D.about.area;
+  document.getElementById('ab-title').value = D.about[AL].title || '';
+  document.getElementById('ab-desc').value = D.about[AL].desc || '';
+  document.getElementById('feats-edit').innerHTML = (D.about[AL].feats||[]).map((f,i)=>`
+    <div style="background:var(--gr);border-radius:8px;padding:1rem;margin-bottom:.75rem;border:1px solid var(--bd)">
+      <div style="font-size:12px;font-weight:700;color:var(--mu);margin-bottom:.6rem">АРТЫҚШЫЛЫҚ ${i+1}</div>
+      <div class="f3">
+        <div class="fg" style="margin:0"><label>Иконка</label><input value="${f.i}" onchange="D.about['${AL}'].feats[${i}].i=this.value" style="text-align:center;font-size:18px"/></div>
+        <div class="fg" style="margin:0"><label>Атауы</label><input value="${f.t}" onchange="D.about['${AL}'].feats[${i}].t=this.value"/></div>
+        <div class="fg" style="margin:0"><label>Сипаттамасы</label><input value="${f.d}" onchange="D.about['${AL}'].feats[${i}].d=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+function saveAbout(){
+  D.about.year = document.getElementById('ab-year').value;
+  D.about.area = document.getElementById('ab-area').value;
+  D.about[AL].title = document.getElementById('ab-title').value;
+  D.about[AL].desc = document.getElementById('ab-desc').value;
+  saveD(); showSaved('sv-about'); toast('✅ Ферма туралы бөлім сақталды!');
+}
+
+// ========== PRODUCTS ==========
+function loadProds(){
+  document.getElementById('prod-list').innerHTML = D.products.map((p,i)=>`
+    <div class="litem">
+      <div class="litem-left"><div class="litem-ico">${p.icon}</div><div><div class="litem-name">${p[AL].title}</div><div class="litem-sub">${p[AL].tags}</div></div></div>
+      <div class="litem-btns">
+        <button class="ebtn" onclick="editProd(${i})">✏️ Өзгерту</button>
+        <button class="dbtn" onclick="delItem('prod',${i})">🗑️ Жою</button>
+      </div>
+    </div>`).join('') || '<div style="color:var(--mu);text-align:center;padding:2rem">Өнімдер жоқ. «Жаңа өнім қосу» батырмасын басыңыз.</div>';
+  cancelEdit('prod');
+}
+function editProd(i){
+  editIdx.prod = i; const p = D.products[i];
+  document.getElementById('pe-icon').value = p.icon;
+  document.getElementById('pe-color').value = p.color;
+  document.getElementById('pe-title').value = p[AL].title||'';
+  document.getElementById('pe-desc').value = p[AL].desc||'';
+  document.getElementById('pe-tags').value = p[AL].tags||'';
+  document.getElementById('pe-price').value = p[AL].price||'';
+  document.getElementById('prod-form').classList.add('show');
+  document.getElementById('prod-form').scrollIntoView({behavior:'smooth'});
+}
+function addItem(type){
+  if(type==='prod'){ D.products.push({icon:'🌾',color:'grain',kk:{title:'Жаңа өнім',desc:'Сипаттама',tags:'Тег1,Тег2',price:'Бағасы'},ru:{title:'Новый продукт',desc:'Описание',tags:'Тег1,Тег2',price:'Цена'},en:{title:'New Product',desc:'Description',tags:'Tag1,Tag2',price:'Price'}}); editProd(D.products.length-1); loadProds(); editProd(D.products.length-1); }
+  else if(type==='team'){ D.team.push({icon:'👤',name:'Жаңа қызметкер',since:'2026',kk:{role:'Қызметі',desc:'Сипаттама'},ru:{role:'Должность',desc:'Описание'},en:{role:'Position',desc:'Description'}}); loadTeam(); editTeam(D.team.length-1); }
+  else if(type==='news'){ D.news.push({icon:'📰',ni:'ni1',kk:{date:'2026',title:'Жаңа жаңалық',desc:'Мазмұн'},ru:{date:'2026',title:'Новость',desc:'Содержание'},en:{date:'2026',title:'News',desc:'Content'}}); loadNews(); editNews(D.news.length-1); }
+  else if(type==='faq'){ D.faq.push({kk:{q:'Жаңа сұрақ',a:'Жауап'},ru:{q:'Новый вопрос',a:'Ответ'},en:{q:'New question',a:'Answer'}}); loadFaq(); editFaq(D.faq.length-1); }
+}
+function saveProd(){
+  const i = editIdx.prod;
+  D.products[i].icon = document.getElementById('pe-icon').value;
+  D.products[i].color = document.getElementById('pe-color').value;
+  D.products[i][AL].title = document.getElementById('pe-title').value;
+  D.products[i][AL].desc = document.getElementById('pe-desc').value;
+  D.products[i][AL].tags = document.getElementById('pe-tags').value;
+  D.products[i][AL].price = document.getElementById('pe-price').value;
+  saveD(); loadProds(); updateDash(); toast('✅ Өнім сақталды!');
+}
+function delItem(type, i){
+  const names = {prod:'өнімді',team:'қызметкерді',news:'жаңалықты',faq:'сұрақты'};
+  if(!confirm(`Осы ${names[type]} жою керек пе?`)) return;
+  if(type==='prod') D.products.splice(i,1);
+  else if(type==='team') D.team.splice(i,1);
+  else if(type==='news') D.news.splice(i,1);
+  else if(type==='faq') D.faq.splice(i,1);
+  saveD(); updateDash();
+  if(type==='prod') loadProds();
+  else if(type==='team') loadTeam();
+  else if(type==='news') loadNews();
+  else if(type==='faq') loadFaq();
+  toast('🗑️ Жойылды');
+}
+function cancelEdit(type){ document.getElementById(`${type}-form`).classList.remove('show'); editIdx[type]=-1; }
+
+// ========== TEAM ==========
+function loadTeam(){
+  document.getElementById('team-list').innerHTML = D.team.map((t,i)=>`
+    <div class="litem">
+      <div class="litem-left"><div class="litem-ico">${t.icon}</div><div><div class="litem-name">${t.name}</div><div class="litem-sub">${t[AL].role} · ${t.since} жылдан бері</div></div></div>
+      <div class="litem-btns">
+        <button class="ebtn" onclick="editTeam(${i})">✏️ Өзгерту</button>
+        <button class="dbtn" onclick="delItem('team',${i})">🗑️ Жою</button>
+      </div>
+    </div>`).join('') || '<div style="color:var(--mu);text-align:center;padding:2rem">Қызметкерлер жоқ.</div>';
+  cancelEdit('team');
+}
+function editTeam(i){
+  editIdx.team = i; const t = D.team[i];
+  document.getElementById('te-icon').value = t.icon;
+  document.getElementById('te-name').value = t.name;
+  document.getElementById('te-role').value = t[AL].role||'';
+  document.getElementById('te-since').value = t.since;
+  document.getElementById('te-desc').value = t[AL].desc||'';
+  document.getElementById('team-form').classList.add('show');
+  document.getElementById('team-form').scrollIntoView({behavior:'smooth'});
+}
+function saveTeam(){
+  const i = editIdx.team;
+  D.team[i].icon = document.getElementById('te-icon').value;
+  D.team[i].name = document.getElementById('te-name').value;
+  D.team[i][AL].role = document.getElementById('te-role').value;
+  D.team[i].since = document.getElementById('te-since').value;
+  D.team[i][AL].desc = document.getElementById('te-desc').value;
+  saveD(); loadTeam(); updateDash(); toast('✅ Қызметкер сақталды!');
+}
+
+// ========== NEWS ==========
+function loadNews(){
+  document.getElementById('news-list').innerHTML = D.news.map((n,i)=>`
+    <div class="litem">
+      <div class="litem-left"><div class="litem-ico">${n.icon}</div><div><div class="litem-name">${n[AL].title}</div><div class="litem-sub">${n[AL].date}</div></div></div>
+      <div class="litem-btns">
+        <button class="ebtn" onclick="editNews(${i})">✏️ Өзгерту</button>
+        <button class="dbtn" onclick="delItem('news',${i})">🗑️ Жою</button>
+      </div>
+    </div>`).join('') || '<div style="color:var(--mu);text-align:center;padding:2rem">Жаңалықтар жоқ.</div>';
+  cancelEdit('news');
+}
+function editNews(i){
+  editIdx.news = i; const n = D.news[i];
+  document.getElementById('ne-icon').value = n.icon;
+  document.getElementById('ne-date').value = n[AL].date||'';
+  document.getElementById('ne-title').value = n[AL].title||'';
+  document.getElementById('ne-desc').value = n[AL].desc||'';
+  document.getElementById('news-form').classList.add('show');
+  document.getElementById('news-form').scrollIntoView({behavior:'smooth'});
+}
+function saveNews(){
+  const i = editIdx.news;
+  D.news[i].icon = document.getElementById('ne-icon').value;
+  D.news[i][AL].date = document.getElementById('ne-date').value;
+  D.news[i][AL].title = document.getElementById('ne-title').value;
+  D.news[i][AL].desc = document.getElementById('ne-desc').value;
+  saveD(); loadNews(); updateDash(); toast('✅ Жаңалық сақталды!');
+}
+
+// ========== FAQ ==========
+function loadFaq(){
+  document.getElementById('faq-list').innerHTML = D.faq.map((f,i)=>`
+    <div class="litem">
+      <div class="litem-left" style="flex:1"><div class="litem-name">❓ ${f[AL].q}</div><div class="litem-sub" style="white-space:normal;margin-top:2px">${f[AL].a.substring(0,60)}...</div></div>
+      <div class="litem-btns" style="flex-shrink:0">
+        <button class="ebtn" onclick="editFaq(${i})">✏️ Өзгерту</button>
+        <button class="dbtn" onclick="delItem('faq',${i})">🗑️ Жою</button>
+      </div>
+    </div>`).join('') || '<div style="color:var(--mu);text-align:center;padding:2rem">Сұрақтар жоқ.</div>';
+  cancelEdit('faq');
+}
+function editFaq(i){
+  editIdx.faq = i; const f = D.faq[i];
+  document.getElementById('fqe-q').value = f[AL].q||'';
+  document.getElementById('fqe-a').value = f[AL].a||'';
+  document.getElementById('faq-form').classList.add('show');
+  document.getElementById('faq-form').scrollIntoView({behavior:'smooth'});
+}
+function saveFaq(){
+  const i = editIdx.faq;
+  D.faq[i][AL].q = document.getElementById('fqe-q').value;
+  D.faq[i][AL].a = document.getElementById('fqe-a').value;
+  saveD(); loadFaq(); updateDash(); toast('✅ Сұрақ сақталды!');
+}
+
+// ========== CONTACT ==========
+function loadContact(){
+  document.getElementById('c-p1').value = D.contact.phone1;
+  document.getElementById('c-p2').value = D.contact.phone2;
+  document.getElementById('c-e1').value = D.contact.email1;
+  document.getElementById('c-e2').value = D.contact.email2;
+  document.getElementById('c-akk').value = D.contact.addr_kk;
+  document.getElementById('c-aru').value = D.contact.addr_ru;
+  document.getElementById('c-aen').value = D.contact.addr_en;
+  document.getElementById('c-wd').value = D.contact.wd;
+  document.getElementById('c-ws').value = D.contact.ws;
+}
+function saveContact(){
+  D.contact.phone1 = document.getElementById('c-p1').value;
+  D.contact.phone2 = document.getElementById('c-p2').value;
+  D.contact.email1 = document.getElementById('c-e1').value;
+  D.contact.email2 = document.getElementById('c-e2').value;
+  D.contact.addr_kk = document.getElementById('c-akk').value;
+  D.contact.addr_ru = document.getElementById('c-aru').value;
+  D.contact.addr_en = document.getElementById('c-aen').value;
+  D.contact.wd = document.getElementById('c-wd').value;
+  D.contact.ws = document.getElementById('c-ws').value;
+  saveD(); showSaved('sv-contact'); toast('✅ Байланыс мәліметтері сақталды!');
+}
+
+// ========== HELPERS ==========
+function setE(inputId, btn, emoji){
+  document.getElementById(inputId).value = emoji;
+  btn.closest('.emoji-grid').querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function showSaved(id){ const el=document.getElementById(id); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),3000); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+function previewSite(){ window.open('index.html','_blank'); }
+function resetData(){
+  if(!confirm('⚠️ Барлық деректер бастапқы күйіне оралады. Жалғастыру керек пе?')) return;
+  D = JSON.parse(JSON.stringify(DEF)); saveD(); loadAll(); nav('dash'); toast('↺ Бастапқы деректерге оралды');
+}
+</script>
+</body>
+</html>
