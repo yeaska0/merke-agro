@@ -602,13 +602,46 @@ const DEF = {
   contact:{phone1:'+7 (726) 234-56-78',phone2:'+7 (700) 123-45-67',email1:'info@merkeagro.kz',email2:'sales@merkeagro.kz',addr_kk:'Жамбыл облысы, Мерке ауданы, Агро кешені №1',addr_ru:'Жамбылская область, район Мерке, Агрокомплекс №1',addr_en:'Zhambyl Region, Merke District, Agro Complex No.1',wd:'Дүйсенбі–Жұма: 08:00–18:00',ws:'Сенбі: 09:00–14:00'},
 };
 
+// ========== GITHUB CONFIG ==========
+const GH_OWNER = 'yeaska0', GH_REPO = 'merke-agro', GH_FILE = 'data.json';
+
 // ========== STATE ==========
-let D = JSON.parse(localStorage.getItem('merkeData') || 'null') || JSON.parse(JSON.stringify(DEF));
+let D = JSON.parse(JSON.stringify(DEF));
 let AL = 'kk';
 let editIdx = {prod:-1, team:-1, news:-1, faq:-1};
 const PASS = 'merke2026';
 
-function saveD(){ localStorage.setItem('merkeData', JSON.stringify(D)); }
+async function saveD(toastMsg, savedId) {
+  let token = localStorage.getItem('ghToken');
+  if (!token) {
+    token = prompt('GitHub токенін бір рет енгізіңіз:');
+    if (!token) return;
+    localStorage.setItem('ghToken', token);
+  }
+  try {
+    const info = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
+      { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } }).then(r=>r.json());
+    if (info.message) throw new Error(info.message);
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(D, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Admin: ' + new Date().toISOString(), content, sha: info.sha })
+    }).then(r=>r.json());
+    if (!res.content) throw new Error(res.message || 'Қате');
+    if (savedId) showSaved(savedId);
+    if (toastMsg) toast('✅ ' + toastMsg + ' — сайтқа жарияланды!');
+  } catch(e) {
+    toast('❌ Қате: ' + e.message);
+  }
+}
+
+async function loadRemoteData() {
+  try {
+    const r = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}?t=${Date.now()}`);
+    if (r.ok) D = await r.json();
+  } catch(e) {}
+}
 
 // ========== LOGIN ==========
 function tryLogin(){
@@ -637,7 +670,7 @@ function switchL(btn, lang){
 }
 
 // ========== LOAD ALL ==========
-function loadAll(){ updateDash(); }
+async function loadAll(){ await loadRemoteData(); updateDash(); }
 function updateDash(){
   document.getElementById('d-p').textContent = D.products.length;
   document.getElementById('d-n').textContent = D.news.length;
@@ -664,7 +697,7 @@ function loadHero(){
 function saveHero(){
   D.hero[AL].badge = document.getElementById('h-badge').value;
   D.hero[AL].desc = document.getElementById('h-desc').value;
-  saveD(); showSaved('sv-hero'); toast('✅ Басты бет сақталды!');
+  saveD('Басты бет сақталды', 'sv-hero');
 }
 
 // ========== STATS ==========
@@ -678,7 +711,7 @@ function loadStats(){
       </div>
     </div>`).join('');
 }
-function saveStats(){ saveD(); showSaved('sv-stats'); toast('✅ Статистика сақталды!'); }
+function saveStats(){ saveD('Статистика сақталды', 'sv-stats'); }
 
 // ========== ABOUT ==========
 function loadAbout(){
@@ -701,7 +734,7 @@ function saveAbout(){
   D.about.area = document.getElementById('ab-area').value;
   D.about[AL].title = document.getElementById('ab-title').value;
   D.about[AL].desc = document.getElementById('ab-desc').value;
-  saveD(); showSaved('sv-about'); toast('✅ Ферма туралы бөлім сақталды!');
+  saveD('Ферма туралы сақталды', 'sv-about');
 }
 
 // ========== PRODUCTS ==========
@@ -741,7 +774,7 @@ function saveProd(){
   D.products[i][AL].desc = document.getElementById('pe-desc').value;
   D.products[i][AL].tags = document.getElementById('pe-tags').value;
   D.products[i][AL].price = document.getElementById('pe-price').value;
-  saveD(); loadProds(); updateDash(); toast('✅ Өнім сақталды!');
+  saveD('Өнім сақталды', null); loadProds(); updateDash();
 }
 function delItem(type, i){
   const names = {prod:'өнімді',team:'қызметкерді',news:'жаңалықты',faq:'сұрақты'};
@@ -788,7 +821,7 @@ function saveTeam(){
   D.team[i][AL].role = document.getElementById('te-role').value;
   D.team[i].since = document.getElementById('te-since').value;
   D.team[i][AL].desc = document.getElementById('te-desc').value;
-  saveD(); loadTeam(); updateDash(); toast('✅ Қызметкер сақталды!');
+  saveD('Қызметкер сақталды', null); loadTeam(); updateDash();
 }
 
 // ========== NEWS ==========
@@ -818,7 +851,7 @@ function saveNews(){
   D.news[i][AL].date = document.getElementById('ne-date').value;
   D.news[i][AL].title = document.getElementById('ne-title').value;
   D.news[i][AL].desc = document.getElementById('ne-desc').value;
-  saveD(); loadNews(); updateDash(); toast('✅ Жаңалық сақталды!');
+  saveD('Жаңалық сақталды', null); loadNews(); updateDash();
 }
 
 // ========== FAQ ==========
@@ -844,7 +877,7 @@ function saveFaq(){
   const i = editIdx.faq;
   D.faq[i][AL].q = document.getElementById('fqe-q').value;
   D.faq[i][AL].a = document.getElementById('fqe-a').value;
-  saveD(); loadFaq(); updateDash(); toast('✅ Сұрақ сақталды!');
+  saveD('Сұрақ сақталды', null); loadFaq(); updateDash();
 }
 
 // ========== CONTACT ==========
@@ -869,7 +902,7 @@ function saveContact(){
   D.contact.addr_en = document.getElementById('c-aen').value;
   D.contact.wd = document.getElementById('c-wd').value;
   D.contact.ws = document.getElementById('c-ws').value;
-  saveD(); showSaved('sv-contact'); toast('✅ Байланыс мәліметтері сақталды!');
+  saveD('Байланыс сақталды', 'sv-contact');
 }
 
 // ========== HELPERS ==========
@@ -883,7 +916,7 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
 function previewSite(){ window.open('index.html','_blank'); }
 function resetData(){
   if(!confirm('⚠️ Барлық деректер бастапқы күйіне оралады. Жалғастыру керек пе?')) return;
-  D = JSON.parse(JSON.stringify(DEF)); saveD(); loadAll(); nav('dash'); toast('↺ Бастапқы деректерге оралды');
+  D = JSON.parse(JSON.stringify(DEF)); saveD('Бастапқыға оралды', null); loadAll(); nav('dash');
 }
 </script>
 </body>

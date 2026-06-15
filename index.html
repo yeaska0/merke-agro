@@ -786,12 +786,48 @@ const DEF = {
 // ============================================================
 // STATE
 // ============================================================
-let D = JSON.parse(localStorage.getItem('merkeData') || 'null') || JSON.parse(JSON.stringify(DEF));
+let D = JSON.parse(JSON.stringify(DEF));
 let L = 'kk';
 let adminLang = 'kk';
 let editProdIdx = -1, editTeamIdx = -1, editNewsIdx = -1, editFaqIdx = -1;
 
-function save() { localStorage.setItem('merkeData', JSON.stringify(D)); }
+const GH_OWNER = 'yeaska0', GH_REPO = 'merke-agro', GH_FILE = 'data.json';
+
+async function loadData() {
+  try {
+    const r = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}?t=${Date.now()}`);
+    if (r.ok) D = await r.json();
+  } catch(e) {}
+  render(); setLang(L);
+}
+
+async function save(savedId) {
+  const token = localStorage.getItem('ghToken');
+  if (!token) {
+    const t = prompt('GitHub токенін енгізіңіз:');
+    if (!t) return;
+    localStorage.setItem('ghToken', t);
+  }
+  const tok = localStorage.getItem('ghToken');
+  const el = savedId ? document.getElementById(savedId) : null;
+  if (el) { el.textContent = '⏳ Жариялануда...'; el.classList.add('show'); }
+  try {
+    const info = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
+      { headers: { 'Authorization': `token ${tok}`, 'Accept': 'application/vnd.github.v3+json' } }).then(r=>r.json());
+    if (info.message) throw new Error(info.message);
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(D, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${tok}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Admin update ' + new Date().toISOString(), content, sha: info.sha })
+    }).then(r=>r.json());
+    if (!res.content) throw new Error(res.message || 'Қате');
+    if (el) { el.textContent = '✅ Сайтқа жарияланды!'; setTimeout(()=>{ el.classList.remove('show'); el.textContent='✅ Сақталды'; }, 4000); }
+  } catch(e) {
+    if (el) { el.classList.remove('show'); }
+    alert('Қате: ' + e.message);
+  }
+}
 
 // ============================================================
 // NAVIGATION
@@ -1117,10 +1153,10 @@ function saveFarm() {
   D.about.area = document.getElementById('f-area').value;
   D.about[l].title = document.getElementById('f-atitle').value;
   D.about[l].desc = document.getElementById('f-adesc').value;
-  save(); showSaved('farm-saved');
+  save('farm-saved');
 }
 // SAVE STATS
-function saveStats() { save(); showSaved('stats-saved'); }
+function saveStats() { save('stats-saved'); }
 // SAVE CONTACT
 function saveCont() {
   D.contact.phone1 = document.getElementById('c-phone1').value;
@@ -1132,7 +1168,7 @@ function saveCont() {
   D.contact.addr_en = document.getElementById('c-addr-en').value;
   D.contact.wd = document.getElementById('c-wd').value;
   D.contact.ws = document.getElementById('c-ws').value;
-  save(); showSaved('cont-saved');
+  save('cont-saved');
 }
 
 // PRODUCTS CRUD
@@ -1158,9 +1194,9 @@ function saveProd() {
   D.products[i][l].desc = document.getElementById('pe-desc').value;
   D.products[i][l].tags = document.getElementById('pe-tags').value;
   D.products[i][l].price = document.getElementById('pe-price').value;
-  save(); cancelProdEdit(); loadAdminData(); updateDashboard();
+  save(null); cancelProdEdit(); loadAdminData(); updateDashboard();
 }
-function delProd(i) { if(confirm('Жою?')){ D.products.splice(i,1); save(); loadAdminData(); updateDashboard(); } }
+function delProd(i) { if(confirm('Жою?')){ D.products.splice(i,1); save(null); loadAdminData(); updateDashboard(); } }
 function cancelProdEdit() { document.getElementById('prod-edit-form').classList.remove('show'); editProdIdx=-1; }
 
 // TEAM CRUD
@@ -1184,9 +1220,9 @@ function saveTeam() {
   D.team[i][l].role = document.getElementById('te-role').value;
   D.team[i].since = document.getElementById('te-since').value;
   D.team[i][l].desc = document.getElementById('te-desc').value;
-  save(); cancelTeamEdit(); loadAdminData(); updateDashboard();
+  save(null); cancelTeamEdit(); loadAdminData(); updateDashboard();
 }
-function delTeam(i) { if(confirm('Жою?')){ D.team.splice(i,1); save(); loadAdminData(); updateDashboard(); } }
+function delTeam(i) { if(confirm('Жою?')){ D.team.splice(i,1); save(null); loadAdminData(); updateDashboard(); } }
 function cancelTeamEdit() { document.getElementById('team-edit-form').classList.remove('show'); editTeamIdx=-1; }
 
 // NEWS CRUD
@@ -1208,9 +1244,9 @@ function saveNews() {
   D.news[i][l].date = document.getElementById('ne-date').value;
   D.news[i][l].title = document.getElementById('ne-title').value;
   D.news[i][l].desc = document.getElementById('ne-desc').value;
-  save(); cancelNewsEdit(); loadAdminData(); updateDashboard();
+  save(null); cancelNewsEdit(); loadAdminData(); updateDashboard();
 }
-function delNews(i) { if(confirm('Жою?')){ D.news.splice(i,1); save(); loadAdminData(); updateDashboard(); } }
+function delNews(i) { if(confirm('Жою?')){ D.news.splice(i,1); save(null); loadAdminData(); updateDashboard(); } }
 function cancelNewsEdit() { document.getElementById('news-edit-form').classList.remove('show'); editNewsIdx=-1; }
 
 // FAQ CRUD
@@ -1228,15 +1264,15 @@ function saveFaq() {
   const l = adminLang; const i = editFaqIdx;
   D.faq[i][l].q = document.getElementById('fqe-q').value;
   D.faq[i][l].a = document.getElementById('fqe-a').value;
-  save(); cancelFaqEdit(); loadAdminData(); updateDashboard();
+  save(null); cancelFaqEdit(); loadAdminData(); updateDashboard();
 }
-function delFaq(i) { if(confirm('Жою?')){ D.faq.splice(i,1); save(); loadAdminData(); updateDashboard(); } }
+function delFaq(i) { if(confirm('Жою?')){ D.faq.splice(i,1); save(null); loadAdminData(); updateDashboard(); } }
 function cancelFaqEdit() { document.getElementById('faq-edit-form').classList.remove('show'); editFaqIdx=-1; }
 
 // ============================================================
 // INIT
 // ============================================================
-render();
+loadData();;
 </script>
 </body>
 </html>
