@@ -77,9 +77,9 @@ function renderHero() {
   const h = D.hero;
   el('hbadge').textContent = t(h).badge || '';
   el('hero-title').innerHTML = {
-    kk:'<span>МЕРКЕ АГРО</span> КОМПЛЕКС',
-    ru:'<span>МЕРКЕ АГРО</span> КОМПЛЕКС',
-    en:'<span>MERKE AGRO</span> COMPLEX'
+    kk:'<span>АСТЫҚ</span> МЕРКЕ',
+    ru:'<span>АСТЫҚ</span> МЕРКЕ',
+    en:'<span>ASTYK</span> MERKE'
   }[L];
   el('hero-desc').textContent = t(h).desc || '';
 
