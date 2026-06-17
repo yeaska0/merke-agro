@@ -324,23 +324,6 @@
         "role": "Chief Agronomist",
         "desc": "Lead crop science specialist"
       }
-    },
-    {
-      "icon": "👩‍💼",
-      "name": "Назерке Омарова",
-      "since": "2018",
-      "kk": {
-        "role": "Сату менеджері",
-        "desc": "Өнімдерді сату және маркетинг бойынша маман"
-      },
-      "ru": {
-        "role": "Менеджер по продажам",
-        "desc": "Специалист по продажам"
-      },
-      "en": {
-        "role": "Sales Manager",
-        "desc": "Sales and marketing specialist"
-      }
     }
   ],
   "news": [
