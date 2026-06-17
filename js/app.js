@@ -775,6 +775,7 @@ async function save(savedId) {
     });
     const json = await r.json();
     if (!json.success) throw new Error(json.error || 'Қате');
+    render(); // ← сайтты бірден жаңарту
     if (el2) {
       el2.textContent = '✅ Сайтқа жарияланды!';
       setTimeout(() => { el2.classList.remove('show'); el2.textContent = '✅ Сақталды'; }, 4000);
