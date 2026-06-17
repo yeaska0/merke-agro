@@ -20,8 +20,7 @@ async function loadData() {
 }
 
 async function save(savedId) {
-  if (!token) {
-  }
+  
   const tok = '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';
   const el = savedId ? document.getElementById(savedId) : null;
   if (el) { el.textContent = '⏳ Жариялануда...'; el.classList.add('show'); }
