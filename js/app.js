@@ -58,6 +58,12 @@ function updateLangUI() {
   document.querySelectorAll('.lbtn').forEach((b, i) => {
     b.classList.toggle('active', ['kk','ru','en'][i] === L);
   });
+  // Logo brand name from siteSettings
+  const ss = D ? (D.siteSettings || {}) : {};
+  const b1 = ss.brand1 || 'АСТЫҚ';
+  const b2 = ss.brand2 || 'МЕРКЕ';
+  document.querySelectorAll('.lbrand1').forEach(e => { e.textContent = b1; });
+  document.querySelectorAll('.lbrand2').forEach(e => { e.textContent = b2; });
   el('nl1').textContent = {kk:'Ферма туралы',ru:'О ферме',en:'About'}[L];
   el('nl-hist').textContent = {kk:'Тарих',ru:'История',en:'History'}[L];
   el('nl2').textContent = {kk:'Өнімдер',ru:'Продукция',en:'Products'}[L];
@@ -76,11 +82,10 @@ function t(obj) { return obj[L] || obj['kk'] || ''; }
 function renderHero() {
   const h = D.hero;
   el('hbadge').textContent = t(h).badge || '';
-  el('hero-title').innerHTML = {
-    kk:'<span>АСТЫҚ</span> МЕРКЕ',
-    ru:'<span>АСТЫҚ</span> МЕРКЕ',
-    en:'<span>ASTYK</span> MERKE'
-  }[L];
+  const ss = D.siteSettings || {};
+  const b1 = ss.brand1 || 'АСТЫҚ';
+  const b2 = ss.brand2 || 'МЕРКЕ';
+  el('hero-title').innerHTML = `<span>${b1}</span> ${b2}`;
   el('hero-desc').textContent = t(h).desc || '';
 
   el('hv1t').textContent = {kk:'Астық өндіру',ru:'Производство зерна',en:'Grain Production'}[L];
@@ -264,14 +269,15 @@ function renderContact() {
 // ===== FOOTER =====
 function renderFooter() {
   const c = D.contact || {};
-  el('fdesc').textContent = {kk:'Қазақстандағы ең ірі агро кешендерінің бірі. Табиғи өнімдер, заманауи технология.',ru:'Один из крупнейших агрокомплексов Казахстана. Натуральные продукты, современные технологии.',en:'One of Kazakhstan\'s largest agro complexes. Natural products, modern technology.'}[L];
+  const fss = D.siteSettings || {};
+  el('fdesc').textContent = fss[`footerDesc_${L}`] || {kk:'Қазақстандағы ең ірі агро кешендерінің бірі. Табиғи өнімдер, заманауи технология.',ru:'Один из крупнейших агрокомплексов Казахстана. Натуральные продукты, современные технологии.',en:"One of Kazakhstan's largest agro complexes. Natural products, modern technology."}[L];
   el('fc1h').textContent = {kk:'Бөлімдер',ru:'Разделы',en:'Sections'}[L];
   el('fc1l').innerHTML = ['about','products','team','contact'].map(s => `<li onclick="goTo('${s}')">${{about:{kk:'Ферма',ru:'Ферма',en:'Farm'},products:{kk:'Өнімдер',ru:'Продукция',en:'Products'},team:{kk:'Команда',ru:'Команда',en:'Team'},contact:{kk:'Байланыс',ru:'Контакты',en:'Contact'}}[s][L]}</li>`).join('');
   el('fc2h').textContent = {kk:'Өнімдер',ru:'Продукция',en:'Products'}[L];
   el('fc2l').innerHTML = [{kk:'Астық',ru:'Зерно',en:'Grain'},{kk:'Ет',ru:'Мясо',en:'Meat'},{kk:'Сүт',ru:'Молоко',en:'Dairy'}].map(x => `<li>${x[L]}</li>`).join('');
   el('fc3h').textContent = {kk:'Байланыс',ru:'Контакты',en:'Contacts'}[L];
   el('fc3l').innerHTML = `<li>${c.phone1||''}</li><li>${c.phone2||''}</li><li>${c.email1||''}</li>`;
-  el('fcopy').textContent = `© 2026 Мерке Агро Комплекс. ${L==='kk'?'Барлық құқықтар қорғалған':L==='ru'?'Все права защищены':'All rights reserved'}.`;
+  el('fcopy').textContent = fss[`footerCopy_${L}`] || {kk:'© 2026 Астық Мерке. Барлық құқықтар қорғалған',ru:'© 2026 Астық Мерке. Все права защищены',en:'© 2026 Astyk Merke. All rights reserved'}[L];
   el('floc').textContent = {kk:'Мерке, Жамбыл облысы',ru:'Мерке, Жамбылская область',en:'Merke, Zhambyl Region'}[L];
 }
 
@@ -292,6 +298,7 @@ function toggleDark() {
 
 // ===== NAVIGATION =====
 function goTo(id) {
+  closeMobileNav();
   const target = document.getElementById(id);
   if (target) target.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -367,6 +374,7 @@ function openAdmin() {
   loadAdminNews();
   loadAdminFaq();
   loadAdminCont();
+  loadAdminSettings();
   loadMessages();
 }
 function closeAdmin() {
@@ -377,7 +385,7 @@ function showSec(id) {
   document.querySelectorAll('.asec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.ani').forEach(n => n.classList.remove('active'));
   el(`sec-${id}`).classList.add('active');
-  const idx = ['dash','farm','astats','aprods','ateam','anews','afaq','acont','msgs'].indexOf(id);
+  const idx = ['dash','farm','astats','aprods','ateam','anews','afaq','acont','msgs','settings'].indexOf(id);
   document.querySelectorAll('.ani')[idx]?.classList.add('active');
 }
 
@@ -784,6 +792,44 @@ async function save(savedId) {
     if (el2) el2.classList.remove('show');
     alert('Қате: ' + e.message);
   }
+}
+
+// ===== SITE SETTINGS EDIT =====
+function loadAdminSettings() {
+  const ss = D.siteSettings || {};
+  el('s-brand1').value = ss.brand1 || 'АСТЫҚ';
+  el('s-brand2').value = ss.brand2 || 'МЕРКЕ';
+  el('s-copy-kk').value = ss.footerCopy_kk || '© 2026 Астық Мерке. Барлық құқықтар қорғалған';
+  el('s-copy-ru').value = ss.footerCopy_ru || '© 2026 Астық Мерке. Все права защищены';
+  el('s-copy-en').value = ss.footerCopy_en || '© 2026 Astyk Merke. All rights reserved';
+  el('s-fdesc-kk').value = ss.footerDesc_kk || '';
+  el('s-fdesc-ru').value = ss.footerDesc_ru || '';
+  el('s-fdesc-en').value = ss.footerDesc_en || '';
+}
+function saveSettings() {
+  if (!D.siteSettings) D.siteSettings = {};
+  D.siteSettings.brand1 = el('s-brand1').value;
+  D.siteSettings.brand2 = el('s-brand2').value;
+  D.siteSettings.footerCopy_kk = el('s-copy-kk').value;
+  D.siteSettings.footerCopy_ru = el('s-copy-ru').value;
+  D.siteSettings.footerCopy_en = el('s-copy-en').value;
+  D.siteSettings.footerDesc_kk = el('s-fdesc-kk').value;
+  D.siteSettings.footerDesc_ru = el('s-fdesc-ru').value;
+  D.siteSettings.footerDesc_en = el('s-fdesc-en').value;
+  render();
+  save('settings-saved');
+}
+
+// ===== MOBILE NAV =====
+function toggleMobileNav() {
+  el('navbar').classList.toggle('nav-open');
+  const burger = el('nav-burger');
+  if (burger) burger.textContent = el('navbar').classList.contains('nav-open') ? '✕' : '☰';
+}
+function closeMobileNav() {
+  el('navbar').classList.remove('nav-open');
+  const burger = el('nav-burger');
+  if (burger) burger.textContent = '☰';
 }
 
 // ===== HELPERS =====

@@ -13,7 +13,7 @@
   <div class="nav-inner">
     <div class="logo" onclick="goTo('home')">
       <div class="logo-icon">🌾</div>
-      <div class="logo-text"><span class="ln">АСТЫҚ</span><span class="ls">МЕРКЕ</span></div>
+      <div class="logo-text"><span class="ln lbrand1">АСТЫҚ</span><span class="ls lbrand2">МЕРКЕ</span></div>
     </div>
     <ul class="nav-links">
       <li><a onclick="goTo('about')" id="nl1">Ферма туралы</a></li>
@@ -32,6 +32,7 @@
       </div>
       <button class="dark-toggle" onclick="toggleDark()" id="dark-btn" title="Тема ауыстыру">🌙</button>
       <button class="nav-cta" onclick="goTo('contact')" id="nl-cta">Хабарласу</button>
+      <button class="nav-burger" onclick="toggleMobileNav()" id="nav-burger">☰</button>
     </div>
   </div>
 </nav>
@@ -86,7 +87,7 @@
   <div class="container">
     <span class="stag">📜 Тарих</span>
     <div class="divider"></div>
-    <h2 class="stitle">Мерке диірменінің тарихы</h2>
+    <h2 class="stitle">Астық Мерке тарихы</h2>
     <p class="sdesc" style="margin-bottom:3rem">1936 жылдан бастап — Мерке ауданының өнеркәсіптік мұрасы</p>
     <div class="hist-timeline">
 
@@ -340,7 +341,7 @@
 <footer>
   <div class="fgrid">
     <div class="fbrand">
-      <div class="logo"><div class="logo-icon">🌾</div><div class="logo-text"><span class="ln" style="color:#fff">АСТЫҚ</span><span class="ls">МЕРКЕ</span></div></div>
+      <div class="logo"><div class="logo-icon">🌾</div><div class="logo-text"><span class="ln lbrand1" style="color:#fff">АСТЫҚ</span><span class="ls lbrand2">МЕРКЕ</span></div></div>
       <p id="fdesc"></p>
       <div class="socials">
         <div class="soc" title="Instagram">📷</div>
@@ -390,6 +391,7 @@
       <div class="ani" onclick="showSec('anews')"><span class="aico">📰</span>Жаңалықтар</div>
       <div class="ani" onclick="showSec('afaq')"><span class="aico">❓</span>FAQ</div>
       <div class="ani" onclick="showSec('acont')"><span class="aico">📞</span>Байланыс</div>
+      <div class="ani" onclick="showSec('settings')"><span class="aico">⚙️</span>Баптаулар</div>
       <div class="ani" onclick="showSec('msgs')"><span class="aico">💬</span>Хабарламалар<span id="msg-badge" style="background:#e53935;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:4px;display:none"></span></div>
     </div>
     <div class="afooter">
@@ -590,6 +592,34 @@
       </div>
       <button class="asave" onclick="saveCont()">💾 Сақтау</button>
       <span class="saved-msg" id="cont-saved">✅ Сақталды</span>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="asec" id="sec-settings">
+      <div class="asec-title">⚙️ Сайт баптаулары</div>
+      <div class="asec-sub">Логотип атауы, footer мәтіні және авторлық құқық</div>
+      <div class="acard">
+        <h3>🏷️ Логотип атауы</h3>
+        <div class="afrow">
+          <div class="afg"><label>1-жол (мысалы: АСТЫҚ)</label><input id="s-brand1"/></div>
+          <div class="afg"><label>2-жол (мысалы: МЕРКЕ)</label><input id="s-brand2"/></div>
+        </div>
+        <p style="font-size:.75rem;color:var(--mu);margin-top:.3rem">Логотипте, навигацияда және барлық жерде осы атау пайдаланылады.</p>
+      </div>
+      <div class="acard">
+        <h3>📄 Footer авторлық құқық</h3>
+        <div class="afg"><label>ҚАЗ</label><input id="s-copy-kk" placeholder="© 2026 Астық Мерке. Барлық құқықтар қорғалған"/></div>
+        <div class="afg"><label>РУС</label><input id="s-copy-ru" placeholder="© 2026 Астық Мерке. Все права защищены"/></div>
+        <div class="afg"><label>ENG</label><input id="s-copy-en" placeholder="© 2026 Astyk Merke. All rights reserved"/></div>
+      </div>
+      <div class="acard">
+        <h3>📝 Footer сипаттама</h3>
+        <div class="afg"><label>ҚАЗ</label><textarea id="s-fdesc-kk" rows="2"></textarea></div>
+        <div class="afg"><label>РУС</label><textarea id="s-fdesc-ru" rows="2"></textarea></div>
+        <div class="afg"><label>ENG</label><textarea id="s-fdesc-en" rows="2"></textarea></div>
+      </div>
+      <button class="asave" onclick="saveSettings()">💾 Сақтау</button>
+      <span class="saved-msg" id="settings-saved">✅ Сақталды</span>
     </div>
 
     <!-- MESSAGES -->
