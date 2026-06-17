@@ -20,13 +20,9 @@ async function loadData() {
 }
 
 async function save(savedId) {
-  const token = localStorage.getItem('ghToken');
   if (!token) {
-    const t = prompt('GitHub токенін енгізіңіз:');
-    if (!t) return;
-    localStorage.setItem('ghToken', t);
   }
-  const tok = localStorage.getItem('ghToken');
+  const tok = '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';
   const el = savedId ? document.getElementById(savedId) : null;
   if (el) { el.textContent = '⏳ Жариялануда...'; el.classList.add('show'); }
   try {
@@ -269,9 +265,7 @@ function toggleDark() {
 // ============================================================
 const PASS = 'merke2026';
 function showLogin() {
-  const hints = {kk:`Кіру үшін: ${PASS}`,ru:`Для входа: ${PASS}`,en:`Password: ${PASS}`};
   document.getElementById('lsub').textContent = {kk:'Сайтты басқару үшін кіріңіз',ru:'Войдите для управления сайтом',en:'Log in to manage the website'}[L];
-  document.getElementById('mhint').textContent = hints[L];
   document.getElementById('lbtn-ok').textContent = {kk:'Кіру',ru:'Войти',en:'Login'}[L];
   document.getElementById('lbtn-no').textContent = {kk:'Болдырмау',ru:'Отмена',en:'Cancel'}[L];
   document.getElementById('merr').style.display='none';
