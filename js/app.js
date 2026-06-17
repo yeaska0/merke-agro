@@ -51,7 +51,23 @@ function render() {
   renderFaq();
   renderContact();
   renderFooter();
-  setLang(L);
+  updateLangUI();
+}
+
+function updateLangUI() {
+  document.querySelectorAll('.lbtn').forEach((b, i) => {
+    b.classList.toggle('active', ['kk','ru','en'][i] === L);
+  });
+  el('nl1').textContent = {kk:'Ферма туралы',ru:'О ферме',en:'About'}[L];
+  el('nl-hist').textContent = {kk:'Тарих',ru:'История',en:'History'}[L];
+  el('nl2').textContent = {kk:'Өнімдер',ru:'Продукция',en:'Products'}[L];
+  el('nl3').textContent = {kk:'Команда',ru:'Команда',en:'Team'}[L];
+  el('nl4').textContent = {kk:'Жаңалықтар',ru:'Новости',en:'News'}[L];
+  el('nl5').textContent = {kk:'FAQ',ru:'FAQ',en:'FAQ'}[L];
+  el('nl6').textContent = {kk:'Байланыс',ru:'Контакты',en:'Contact'}[L];
+  el('nl-cta').textContent = {kk:'Хабарласу',ru:'Связаться',en:'Contact Us'}[L];
+  el('hb1').textContent = {kk:'Өнімдерді көру',ru:'Смотреть продукцию',en:'View Products'}[L];
+  el('hb2').textContent = {kk:'Бізбен байланысу',ru:'Связаться с нами',en:'Contact Us'}[L];
 }
 
 function t(obj) { return obj[L] || obj['kk'] || ''; }
@@ -263,20 +279,6 @@ function renderFooter() {
 function setLang(lang) {
   L = lang;
   localStorage.setItem('merke_lang', L);
-  document.querySelectorAll('.lbtn').forEach((b, i) => {
-    b.classList.toggle('active', ['kk','ru','en'][i] === L);
-  });
-  // nav links
-  el('nl1').textContent = {kk:'Ферма туралы',ru:'О ферме',en:'About'}[L];
-  el('nl-hist').textContent = {kk:'Тарих',ru:'История',en:'History'}[L];
-  el('nl2').textContent = {kk:'Өнімдер',ru:'Продукция',en:'Products'}[L];
-  el('nl3').textContent = {kk:'Команда',ru:'Команда',en:'Team'}[L];
-  el('nl4').textContent = {kk:'Жаңалықтар',ru:'Новости',en:'News'}[L];
-  el('nl5').textContent = {kk:'FAQ',ru:'FAQ',en:'FAQ'}[L];
-  el('nl6').textContent = {kk:'Байланыс',ru:'Контакты',en:'Contact'}[L];
-  el('nl-cta').textContent = {kk:'Хабарласу',ru:'Связаться',en:'Contact Us'}[L];
-  el('hb1').textContent = {kk:'Өнімдерді көру',ru:'Смотреть продукцию',en:'View Products'}[L];
-  el('hb2').textContent = {kk:'Бізбен байланысу',ru:'Связаться с нами',en:'Contact Us'}[L];
   render();
 }
 
