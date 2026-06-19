@@ -244,28 +244,6 @@
         "tags": "Wheat,Barley,Oats,Sunflower",
         "price": "Price: from ₸65/kg"
       }
-    },
-    {
-      "icon": "🥛",
-      "color": "dairy",
-      "kk": {
-        "title": "Сүт өнімдері",
-        "desc": "Табиғи сүттен дайындалған дәстүрлі қазақ сүт өнімдері.",
-        "tags": "Сүт,Қымыз,Айран,Сары май",
-        "price": "Бағасы: 180₸/л бастап"
-      },
-      "ru": {
-        "title": "Молочные продукты",
-        "desc": "Традиционные казахские молочные продукты.",
-        "tags": "Молоко,Кумыс,Айран,Масло",
-        "price": "Цена: от 180₸/л"
-      },
-      "en": {
-        "title": "Dairy Products",
-        "desc": "Traditional Kazakh dairy products.",
-        "tags": "Milk,Kumiss,Ayran,Butter",
-        "price": "Price: from ₸180/liter"
-      }
     }
   ],
   "team": [
