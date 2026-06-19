@@ -244,6 +244,18 @@
         "tags": "Wheat,Barley,Oats,Sunflower",
         "price": "Price: from ₸65/kg"
       }
+    },
+    {
+      "icon": "🌾",
+      "color": "grain",
+      "kk": {
+        "title": "",
+        "desc": "",
+        "tags": "",
+        "price": ""
+      },
+      "ru": {},
+      "en": {}
     }
   ],
   "team": [
