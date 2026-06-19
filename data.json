@@ -246,28 +246,6 @@
       }
     },
     {
-      "icon": "🥩",
-      "color": "meat",
-      "kk": {
-        "title": "Мал шаруашылығы өнімдері",
-        "desc": "Табиғи жайылымда өскен малдың таза еті.",
-        "tags": "Сиыр еті,Қой еті,Жылқы еті,Қазы",
-        "price": "Бағасы: 1800₸/кг бастап"
-      },
-      "ru": {
-        "title": "Мясная продукция",
-        "desc": "Чистое мясо скота.",
-        "tags": "Говядина,Баранина,Конина,Казы",
-        "price": "Цена: от 1800₸/кг"
-      },
-      "en": {
-        "title": "Meat Products",
-        "desc": "Pure meat from naturally pastured livestock.",
-        "tags": "Beef,Lamb,Horse meat,Kazy",
-        "price": "Price: from ₸1800/kg"
-      }
-    },
-    {
       "icon": "🥛",
       "color": "dairy",
       "kk": {
