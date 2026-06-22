@@ -186,16 +186,6 @@ section{padding:80px 2rem}
 .tmdesc{font-size:.78rem;color:var(--mu);line-height:1.5;margin-bottom:.6rem}
 .tmsince{font-size:.72rem;color:var(--muted);background:var(--gr);padding:.15rem .5rem;border-radius:8px;display:inline-block}
 
-/* ===== GALLERY ===== */
-.gal-bg{background:var(--gr)}
-.galgrid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:1rem;margin-top:2rem}
-.gitem{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:3rem;overflow:hidden;transition:var(--transition);cursor:pointer}
-.gitem:hover{transform:scale(1.02);box-shadow:var(--shadow-md)}
-.ga{grid-row:span 2;background:linear-gradient(135deg,#2e7d32,#1b5e20)}
-.gb{background:linear-gradient(135deg,#ff8f00,#e65100)}
-.gc{background:linear-gradient(135deg,#0288d1,#01579b)}
-.gd{background:linear-gradient(135deg,#558b2f,#33691e)}
-.ge{background:linear-gradient(135deg,#6a1b9a,#4a148c)}
 
 /* ===== NEWS ===== */
 .news-bg{background:var(--bg)}
@@ -405,8 +395,6 @@ footer{background:linear-gradient(135deg,#0d1f0d,#1a2e1a);color:rgba(255,255,255
   .dstats{grid-template-columns:repeat(2,1fr)}
   .frow{grid-template-columns:1fr}
   .afrow{grid-template-columns:1fr}
-  .galgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
-  .ga{grid-row:auto}
   .hero h1{font-size:clamp(1.8rem,7vw,2.6rem)}
   .hist-timeline::before{left:30px}
   .ht-year{width:28px;font-size:.7rem;word-break:break-word}

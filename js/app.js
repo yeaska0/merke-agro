@@ -201,12 +201,6 @@ function renderNews() {
   });
 }
 
-// ===== GALLERY =====
-function renderGallery() {
-  el('gl-tag').textContent = {kk:'📸 Галерея',ru:'📸 Галерея',en:'📸 Gallery'}[L];
-  el('gl-title').textContent = {kk:'Фото галерея',ru:'Фотогалерея',en:'Photo Gallery'}[L];
-}
-
 // ===== CERTS =====
 function renderCerts() {
   el('ce-tag').textContent = {kk:'📜 Сертификаттар',ru:'📜 Сертификаты',en:'📜 Certifications'}[L];
