@@ -90,8 +90,6 @@ function renderHero() {
 
   el('hv1t').textContent = {kk:'Астық өндіру',ru:'Производство зерна',en:'Grain Production'}[L];
   el('hv1d').textContent = {kk:'5000+ га егістік',ru:'5000+ га пашни',en:'5000+ ha arable'}[L];
-  el('hv2t').textContent = {kk:'Мал шаруашылығы',ru:'Животноводство',en:'Livestock'}[L];
-  el('hv2d').textContent = {kk:'500+ мал басы',ru:'500+ голов скота',en:'500+ head'}[L];
   el('hv3t').textContent = {kk:'Сүт өнімдері',ru:'Молочные продукты',en:'Dairy'}[L];
   el('hv3d').textContent = {kk:'Дәстүрлі рецептпен',ru:'По традиционным рецептам',en:'Traditional recipes'}[L];
 
