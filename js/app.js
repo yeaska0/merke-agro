@@ -272,7 +272,7 @@ function renderFooter() {
   el('fc1h').textContent = {kk:'Бөлімдер',ru:'Разделы',en:'Sections'}[L];
   el('fc1l').innerHTML = ['about','products','team','contact'].map(s => `<li onclick="goTo('${s}')">${{about:{kk:'Ферма',ru:'Ферма',en:'Farm'},products:{kk:'Өнімдер',ru:'Продукция',en:'Products'},team:{kk:'Команда',ru:'Команда',en:'Team'},contact:{kk:'Байланыс',ru:'Контакты',en:'Contact'}}[s][L]}</li>`).join('');
   el('fc2h').textContent = {kk:'Өнімдер',ru:'Продукция',en:'Products'}[L];
-  el('fc2l').innerHTML = [{kk:'Астық',ru:'Зерно',en:'Grain'},{kk:'Ет',ru:'Мясо',en:'Meat'},{kk:'Сүт',ru:'Молоко',en:'Dairy'}].map(x => `<li>${x[L]}</li>`).join('');
+  el('fc2l').innerHTML = [{kk:'Астық',ru:'Зерно',en:'Grain'},{kk:'Сүт',ru:'Молоко',en:'Dairy'}].map(x => `<li>${x[L]}</li>`).join('');
   el('fc3h').textContent = {kk:'Байланыс',ru:'Контакты',en:'Contacts'}[L];
   el('fc3l').innerHTML = `<li>${c.phone1||''}</li><li>${c.phone2||''}</li><li>${c.email1||''}</li>`;
   el('fcopy').textContent = fss[`footerCopy_${L}`] || {kk:'© 2026 Астық Мерке. Барлық құқықтар қорғалған',ru:'© 2026 Астық Мерке. Все права защищены',en:'© 2026 Astyk Merke. All rights reserved'}[L];
